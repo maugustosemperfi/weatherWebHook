@@ -42,6 +42,10 @@ server.post('/get-weather', (req, res) => {
     console.log('Date: ' + date);
   }
 
+  if (new Date(date1) > new Date()) {
+    date = new Date().toJSON().substr(0,10);
+  }
+
   // Call the weather API
   callWeatherApi(city, date).then((output) => {
     res.json({ 
@@ -68,7 +72,6 @@ function callWeatherApi (city, date) {
       res.on('end', () => {
         // After all the data has been received parse the JSON for desired data
         let response = JSON.parse(body);
-        console.log(response['data']);
         let forecast = response['data']['weather'][0];
         let location = response['data']['request'][0];
         //let conditions = response['data']['current_condition'][0];
@@ -89,7 +92,7 @@ function callWeatherApi (city, date) {
         Para às 18:00, espera-se ${weatherDesc18} com temperatura de ${temp18}°C`;
 
         // Resolve the promise with the output text
-        console.log(output);
+        
         resolve(output);
       });
       res.on('error', (error) => {
